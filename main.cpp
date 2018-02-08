@@ -1,24 +1,32 @@
 #include <iostream>
 #include <string>
-//#include <filesystem>
+#include <experimental/filesystem>
 #include <fstream>
 #include <dirent.h>
 #include <sys/stat.h>
 
-//namespace fs = std::filesystem;
 
+//namespace fs = std::experimental/__cpp_lib_experimental_filesystem;
+using namespace std;
 DIR *tempDirPointer = nullptr;
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
+class ForkAndExec {
+    int main() {
+        std::cout << "Hello, World!" << std::endl;
+        string testFileLocation = "";
+        string testDestination = "";
 
-    tempDirPointer = opendir("./var/temp");
-    if (tempDirPointer == nullptr)
-    {
-        std::cout << "Directory /var/temp does not exist?"; //todo: verify this only gets hit when that directory doesn't exist
-
-        tempDirPointer = opendir("./var");
+        tempDirPointer = opendir("./temp");
         if (tempDirPointer == nullptr)
+        {
+            std::cout << "Directory /temp does not exist?"; //todo: verify this only gets hit when that directory doesn't exist
+
+            int dirError = mkdir("temp", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+            if (dirError == -1)
+                std::cout << "Could not create temp directory.";
+            else std::cout << "temp directory created.";
+            tempDirPointer = opendir("./temp");
+/*        if (tempDirPointer == nullptr)
         {
             std::cout << "Creating /var directory";
             int dirError = mkdir("var", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -36,7 +44,14 @@ int main() {
             }
 
         }
-    }
+*/
+        }
+        else
+        {
+            std::cout << "temp directory exists";
+            std::experimental::filesystem::copy(testFileLocation, testDestination);
+        }
 
-    return 0;
-}
+        return 0;
+    }
+};
