@@ -10,17 +10,16 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "Fork and Exec.h"
 
-//namespace fs = std::experimental/__cpp_lib_experimental_filesystem;
+
+
 using namespace std;
 
-
+//todo: doesn't take files from other folders. Or I don't know how to enter them properly into the terminal
 
 DIR *tempDirPointer = nullptr;
 
 const int BUFFSIZE = 8192;
-//extern int errno;
 int n;
 char buf[BUFFSIZE];
 
@@ -53,20 +52,26 @@ int copyFile(char* startFileName)
     return 0;
 }
 
-void compileFiles()
+void compileFiles(string command)
 {
     //todo: compile files method
+    int pid = 0;
+
+/*    pid = fork();
+    if (pid == 0)
+    {
+        //todo: this is where the compiling should happen at some point
+    }
+*/    cout << command << endl;
+
 }
 
 int main(int argCount, char* argValues[])
 {
-    std::cout << "Hello, World!" << std::endl;
-//    int testFileLocation = open("startdoc", O_RDONLY, 0);
-//    int testDestination = open("enddoc", O_WRONLY | O_CREAT, 0644);
-
     bool noCopyErrors = true;
 
     char* fileName;
+    string compileCommand = "g++ -pass-exit-codes -std=c++14 ";
 
 
     tempDirPointer = opendir("./temp");
@@ -85,8 +90,14 @@ int main(int argCount, char* argValues[])
 
     for (int fileCounter = 1; fileCounter < argCount; fileCounter++)
     {//todo: verify this gets all the files
+
+
         fileName = argValues[fileCounter];   //todo: this is a bad way to convert this to a string and concat. Find a better way
         int result = copyFile(fileName);        //todo: this is also probably bad
+
+        compileCommand += argValues[fileCounter];
+        compileCommand += " ";
+
 
         switch (result)
         {
@@ -110,10 +121,13 @@ int main(int argCount, char* argValues[])
 
         }
     }
-    
+
 
     if (noCopyErrors)
-        compileFiles();
+    {
+
+        compileFiles(compileCommand);
+    }
 
 /*
     }
