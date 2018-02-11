@@ -158,7 +158,7 @@ int main(int argCount, char* argValues[])
             std::experimental::filesystem::copy(testFileLocation, testDestination);
         }
 */
-        exit(0);
+        exit(0); 
 };
 
 
