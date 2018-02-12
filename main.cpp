@@ -13,7 +13,7 @@
 
 
 
-using namespace std;
+using namespace std; 
 
 //todo: doesn't take files from other folders. Or I don't know how to enter them properly into the terminal
 
