@@ -5,5 +5,5 @@ set(CMAKE_CXX_STANDARD 11)
 
 
 
-add_executable(Fork_and_Exec main.cpp "Fork and Exec.h")
+add_executable(Fork_and_Exec main.cpp)
 
