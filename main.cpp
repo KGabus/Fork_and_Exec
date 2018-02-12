@@ -13,7 +13,7 @@
 
 
 
-using namespace std;
+using namespace std; 
 
 //todo: doesn't take files from other folders. Or I don't know how to enter them properly into the terminal
 
@@ -22,6 +22,9 @@ DIR *tempDirPointer = nullptr;
 const int BUFFSIZE = 8192;
 int n;
 char buf[BUFFSIZE];
+string compileCommand = "g++ -pass-exit-codes -std=c++14 ";
+char* commandArgs[];                                                    //todo: this could be used with execv to compile the files
+
 
 //class ForkAndExec {
 
@@ -31,6 +34,9 @@ int copyFile(char* startFileName)
 
     char endFileName[100] = "./temp/";
     strcat(endFileName, startFileName);                             //create the copied file's name/path
+
+    compileCommand += endFileName;
+    compileCommand += " ";
 
   //  string endFileName = "./temp" + startFileName;              //todo: strip off location path here if you're going to do it
 
@@ -56,13 +62,15 @@ void compileFiles(string command)
 {
     //todo: compile files method
     int pid = 0;
+    const char* commandPointer = command.c_str();
 
-/*    pid = fork();
+    pid = fork();
     if (pid == 0)
     {
         //todo: this is where the compiling should happen at some point
+        system(commandPointer);
     }
-*/    cout << command << endl;
+    cout << command << endl;
 
 }
 
@@ -71,7 +79,6 @@ int main(int argCount, char* argValues[])
     bool noCopyErrors = true;
 
     char* fileName;
-    string compileCommand = "g++ -pass-exit-codes -std=c++14 ";
 
 
     tempDirPointer = opendir("./temp");
@@ -95,8 +102,7 @@ int main(int argCount, char* argValues[])
         fileName = argValues[fileCounter];   //todo: this is a bad way to convert this to a string and concat. Find a better way
         int result = copyFile(fileName);        //todo: this is also probably bad
 
-        compileCommand += argValues[fileCounter];
-        compileCommand += " ";
+
 
 
         switch (result)
@@ -158,7 +164,7 @@ int main(int argCount, char* argValues[])
             std::experimental::filesystem::copy(testFileLocation, testDestination);
         }
 */
-        exit(0); 
+        exit(0);
 };
 
 
