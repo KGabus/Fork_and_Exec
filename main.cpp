@@ -78,9 +78,11 @@ string fileNameArray[20];                                                    //t
          //   gppCommandArray[loopIndex + 3] = fileNameArray[loopIndex].c_str();    //todo: this should build the command args array for execlp. In theory. Maybe
           //  strcpy(gppCommandArray[loopIndex + 3], fileNameArray[loopIndex].c_str());
           //  gppCommandArray[loopIndex + 3] = new char[fileNameArray[loopIndex].length() + 1];
-            strcpy(gppCommandArray[loopIndex + 3], fileNameArray[loopIndex].c_str());
+            strcpy(gppCommandArray[loopIndex + 3], fileNameArray[loopIndex].c_str());       //fixme: this is throwing a segmentation fault
             cout << fileNameArray[loopIndex] << " ";
         }
+
+        gppCommandArray[argCount] = (char*)NULL;
 
         cout << endl;
 
@@ -103,8 +105,8 @@ string fileNameArray[20];                                                    //t
 
         char* fileName;
 
-        for (int index = 0; index < 20; index++)
-            fileNameArray[index] = (char*)NULL;
+//        for (int index = 0; index <= 20; index++)
+//            fileNameArray[index] = (char*)NULL;               //this was throwing a seg fault
 
 
         tempDirPointer = opendir("./temp");
@@ -161,6 +163,7 @@ string fileNameArray[20];                                                    //t
         {
             compileFiles(argCount);
         }
+
         exit(0);
     };
 
