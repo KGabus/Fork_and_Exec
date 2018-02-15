@@ -17,8 +17,7 @@ DIR *tempDirPointer = nullptr;
 const int BUFFSIZE = 8192;
 int n;
 char buf[BUFFSIZE];
-string compileCommand = "g++ -pass-exit-codes -std=c++14 ";
-string fileNameArray[20];                                                    //todo: this could be used with execv to compile the files
+string fileNameArray[20];
 
 
 
@@ -28,9 +27,6 @@ string fileNameArray[20];                                                    //t
 
         char endFileName[100] = "./temp/";
         strcat(endFileName, startFileName);                             //create the copied file's name/path
-
-        compileCommand += endFileName;
-        compileCommand += " ";
 
       //  string endFileName = "./temp" + startFileName;              //todo: strip off location path here if you're going to do it
 
@@ -43,11 +39,11 @@ string fileNameArray[20];                                                    //t
                 return -2;
             }
         }
+
         if (n < 0) {
             perror("Read Error");
             return -1;
         }
-
 
         return 0;
     }
@@ -58,9 +54,9 @@ string fileNameArray[20];                                                    //t
         int status;
 
         char* gppCommandArray[25];
-        gppCommandArray[0] = "g++";
-        gppCommandArray[1] = "-pass-exit-codes";
-        gppCommandArray[2] = "-std=c++14";
+        gppCommandArray[0] = (char*)"g++";
+        gppCommandArray[1] = (char*)"-pass-exit-codes";
+        gppCommandArray[2] = (char*)"-std=c++14";
 
         for (int loopIndex = 1; loopIndex < argCount; loopIndex++)
         {   //copy files to be compiled into g++ command arg array
@@ -70,9 +66,9 @@ string fileNameArray[20];                                                    //t
 
         gppCommandArray[argCount + 2] = (char*)NULL;
 
+        cout << "Compile command: ";
         for (int loopIndex = 0; loopIndex <= argCount + 1; loopIndex++)
             cout << gppCommandArray[loopIndex] << " ";
-
         cout << endl;
 
         pid = fork();
