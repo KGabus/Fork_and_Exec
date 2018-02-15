@@ -76,14 +76,12 @@ string fileNameArray[20];
         {   //fork succeeded
             if (pid == 0)
             {   //this is the child process
-                if (execvp(gppCommandArray[0], gppCommandArray) < 0)
-                    exit(-1);                                           //todo: apparently returns 0 even if file doesn't compile
-                else exit(0);
+                execvp(gppCommandArray[0], gppCommandArray);
             }
             else
             {   //parent process
                 wait(&status);
-                if (WEXITSTATUS(status) == -1)
+                if (WEXITSTATUS(status) > 0)
                     cout << "Could not compile files." << endl;
                 else cout << "File compilation successful." << endl;
             }
