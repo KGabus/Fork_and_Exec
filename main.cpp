@@ -24,7 +24,7 @@ const int BUFFSIZE = 8192;
 int n;
 char buf[BUFFSIZE];
 string compileCommand = "g++ -pass-exit-codes -std=c++14 ";
-string commandArgs[20];                                                    //todo: this could be used with execv to compile the files
+string fileNameArray[20];                                                    //todo: this could be used with execv to compile the files
 
 
 
@@ -65,22 +65,25 @@ string commandArgs[20];                                                    //tod
         int status;
   //      const char* commandPointer = command.c_str();
 
-        char* gppCommandArray[70];
+        char* gppCommandArray[25];
         gppCommandArray[0] = "g++";
         gppCommandArray[1] = "-pass-exit-codes";
         gppCommandArray[2] = "-std=c++14";
         //todo: these are for debugging, remove before submitting
-        gppCommandArray[3] = "hello.cpp";
-        gppCommandArray[4] = (char*)NULL;
+//        gppCommandArray[3] = "hello.cpp";
+//        gppCommandArray[4] = (char*)NULL;
 
-/*        for (int loopIndex = 0; loopIndex < argCount - 1; loopIndex++)
+        for (int loopIndex = 0; loopIndex < argCount - 1; loopIndex++)
         {   //copy files to be compiled into g++ command arg array
-            gppCommandArray[loopIndex + 3] = commandArgs[loopIndex].c_str();    //todo: this should build the command args array for execlp. In theory. Maybe
-            cout << commandArgs[loopIndex] << " ";
+         //   gppCommandArray[loopIndex + 3] = fileNameArray[loopIndex].c_str();    //todo: this should build the command args array for execlp. In theory. Maybe
+          //  strcpy(gppCommandArray[loopIndex + 3], fileNameArray[loopIndex].c_str());
+          //  gppCommandArray[loopIndex + 3] = new char[fileNameArray[loopIndex].length() + 1];
+            strcpy(gppCommandArray[loopIndex + 3], fileNameArray[loopIndex].c_str());
+            cout << fileNameArray[loopIndex] << " ";
         }
 
         cout << endl;
-*/
+
         pid = fork();
         if (pid >= 0)
         {   //fork succeeded
@@ -91,8 +94,6 @@ string commandArgs[20];                                                    //tod
                 else printf("File compilation successful.");
             }
         }
-
-
     }
 
     int main(int argCount, char* argValues[])
@@ -103,9 +104,7 @@ string commandArgs[20];                                                    //tod
         char* fileName;
 
         for (int index = 0; index < 20; index++)
-            commandArgs[index] = "\0";
-
-
+            fileNameArray[index] = (char*)NULL;
 
 
         tempDirPointer = opendir("./temp");
@@ -123,17 +122,17 @@ string commandArgs[20];                                                    //tod
         }
 
         //todo: uncomment this after getting execlp to work
-       // for (fileCounter = 1; fileCounter < argCount; fileCounter++)
+        for (fileCounter = 1; fileCounter < argCount; fileCounter++)
         {//todo: verify this gets all the files
 
             //todo: this is just for debugging
-            char* ugh = (char*)("hello.cpp");
-            fileName = ugh;
+        //    char* ugh = (char*)("hello.cpp");
+        //    fileName = ugh;
             //todo: uncomment this after I can get execlp working
-            //fileName = argValues[fileCounter];   //todo: this is a bad way to convert this to a string and concat. Find a better way
+            fileName = argValues[fileCounter];   //todo: this is a bad way to convert this to a string and concat. Find a better way
             int result = copyFile(fileName);        //todo: this is also probably bad
 
-            commandArgs[fileCounter - 1] = fileName;
+            fileNameArray[fileCounter - 1] = fileName;
 
 
             switch (result)
@@ -155,17 +154,13 @@ string commandArgs[20];                                                    //tod
                     noCopyErrors = false;
                     break;
                 }
-
             }
         }
 
-        commandArgs[fileCounter] = "\0";        //the array passed to execv must be null terminated
-
         if (noCopyErrors)
         {
-
             compileFiles(argCount);
         }
-            exit(0);
+        exit(0);
     };
 
