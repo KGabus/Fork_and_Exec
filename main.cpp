@@ -58,7 +58,7 @@ string fileNameArray[20];                                                    //t
         return 0;
     }
 
-    void compileFiles(int argCount)
+    void compileFiles(int argCount, char* fileNames[])
     {
         //todo: compile files method
         pid_t pid;
@@ -73,16 +73,16 @@ string fileNameArray[20];                                                    //t
 //        gppCommandArray[3] = "hello.cpp";
 //        gppCommandArray[4] = (char*)NULL;
 
-        for (int loopIndex = 0; loopIndex < argCount - 1; loopIndex++)
+        for (int loopIndex = 1; loopIndex < argCount; loopIndex++)
         {   //copy files to be compiled into g++ command arg array
-         //   gppCommandArray[loopIndex + 3] = fileNameArray[loopIndex].c_str();    //todo: this should build the command args array for execlp. In theory. Maybe
-          //  strcpy(gppCommandArray[loopIndex + 3], fileNameArray[loopIndex].c_str());
-          //  gppCommandArray[loopIndex + 3] = new char[fileNameArray[loopIndex].length() + 1];
-            strcpy(gppCommandArray[loopIndex + 3], fileNameArray[loopIndex].c_str());       //fixme: this is throwing a segmentation fault
+            gppCommandArray[loopIndex + 2] = fileNames[loopIndex];
             cout << fileNameArray[loopIndex] << " ";
         }
 
-        gppCommandArray[argCount] = (char*)NULL;
+        gppCommandArray[argCount + 2] = (char*)NULL;
+
+        for (int loopIndex = 0; loopIndex <= argCount + 1; loopIndex++)
+            cout << gppCommandArray[loopIndex] << " ";
 
         cout << endl;
 
@@ -92,8 +92,15 @@ string fileNameArray[20];                                                    //t
             if (pid == 0)
             {   //this is the child process
                 if (execvp(gppCommandArray[0], gppCommandArray) < 0)
-                    printf("Could not compile files.");
-                else printf("File compilation successful.");
+                    exit(-1);                                           //todo: apparently returns 0 even if file doesn't compile
+                else exit(0);
+            }
+            else
+            {   //parent process
+                wait(&status);
+                if (WEXITSTATUS(status) == -1)
+                    cout << "Could not compile files." << endl;
+                else cout << "File compilation successful." << endl;
             }
         }
     }
@@ -161,7 +168,7 @@ string fileNameArray[20];                                                    //t
 
         if (noCopyErrors)
         {
-            compileFiles(argCount);
+            compileFiles(argCount, argValues);
         }
 
         exit(0);
