@@ -1,17 +1,11 @@
 #include <iostream>
 #include <string.h>
 #include <experimental/filesystem>
-#include <fstream>
 #include <dirent.h>
 #include <sys/stat.h>
-#include <stdio.h>
-#include <errno.h>
-#include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/wait.h>
-
-
 
 
 using namespace std; 
@@ -60,18 +54,13 @@ string fileNameArray[20];                                                    //t
 
     void compileFiles(int argCount, char* fileNames[])
     {
-        //todo: compile files method
         pid_t pid;
         int status;
-  //      const char* commandPointer = command.c_str();
 
         char* gppCommandArray[25];
         gppCommandArray[0] = "g++";
         gppCommandArray[1] = "-pass-exit-codes";
         gppCommandArray[2] = "-std=c++14";
-        //todo: these are for debugging, remove before submitting
-//        gppCommandArray[3] = "hello.cpp";
-//        gppCommandArray[4] = (char*)NULL;
 
         for (int loopIndex = 1; loopIndex < argCount; loopIndex++)
         {   //copy files to be compiled into g++ command arg array
@@ -112,14 +101,9 @@ string fileNameArray[20];                                                    //t
 
         char* fileName;
 
-//        for (int index = 0; index <= 20; index++)
-//            fileNameArray[index] = (char*)NULL;               //this was throwing a seg fault
-
-
         tempDirPointer = opendir("./temp");
         if (tempDirPointer == nullptr) {
-            std::cout
-                    << "Directory /temp does not exist?" << endl; //todo: verify this only gets hit when that directory doesn't exist
+            cout << "Directory /temp does not exist?" << endl; //todo: verify this only gets hit when that directory doesn't exist
 
             int dirError = mkdir("temp", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
             if (dirError == -1)
@@ -130,19 +114,12 @@ string fileNameArray[20];                                                    //t
             else cout << "temp directory created." << endl;
         }
 
-        //todo: uncomment this after getting execlp to work
         for (fileCounter = 1; fileCounter < argCount; fileCounter++)
         {//todo: verify this gets all the files
-
-            //todo: this is just for debugging
-        //    char* ugh = (char*)("hello.cpp");
-        //    fileName = ugh;
-            //todo: uncomment this after I can get execlp working
-            fileName = argValues[fileCounter];   //todo: this is a bad way to convert this to a string and concat. Find a better way
-            int result = copyFile(fileName);        //todo: this is also probably bad
+            fileName = argValues[fileCounter];
+            int result = copyFile(fileName);
 
             fileNameArray[fileCounter - 1] = fileName;
-
 
             switch (result)
             {
