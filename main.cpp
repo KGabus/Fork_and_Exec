@@ -9,7 +9,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <unistd.h>
+#include <sys/wait.h>
+
 
 
 
@@ -60,31 +61,37 @@ string commandArgs[20];                                                    //tod
     void compileFiles(int argCount)
     {
         //todo: compile files method
-        int pid = 0;
+        pid_t pid;
+        int status;
   //      const char* commandPointer = command.c_str();
 
-        const char* gppCommandArray[20];
+        char* gppCommandArray[70];
         gppCommandArray[0] = "g++";
         gppCommandArray[1] = "-pass-exit-codes";
         gppCommandArray[2] = "-std=c++14";
+        //todo: these are for debugging, remove before submitting
+        gppCommandArray[3] = "hello.cpp";
+        gppCommandArray[4] = (char*)NULL;
 
-        for (int loopIndex = 0; loopIndex < argCount - 1; loopIndex++)
+/*        for (int loopIndex = 0; loopIndex < argCount - 1; loopIndex++)
         {   //copy files to be compiled into g++ command arg array
             gppCommandArray[loopIndex + 3] = commandArgs[loopIndex].c_str();    //todo: this should build the command args array for execlp. In theory. Maybe
+            cout << commandArgs[loopIndex] << " ";
         }
 
-
+        cout << endl;
+*/
         pid = fork();
-        if (pid == 0)
-        {
-            //todo: this is where the compiling should happen at some point
-            execlp(gppCommandArray[0], gppCommandArray[20]);                    //todo: test this a lot
-  //      system(commandPointer);                                                 //todo: use execlp instead
-    /*        if (execv("/usr/bin/cc", commandArgs) > 0)                        //todo: this doesn't currently work because of permissions or something
-                cout << "Could not compile files." << endl;
-            else cout << "File compilation successful." << endl;
-    */    }
-     //   cout << command << endl;
+        if (pid >= 0)
+        {   //fork succeeded
+            if (pid == 0)
+            {   //this is the child process
+                if (execvp(gppCommandArray[0], gppCommandArray) < 0)
+                    printf("Could not compile files.");
+                else printf("File compilation successful.");
+            }
+        }
+
 
     }
 
@@ -94,6 +101,10 @@ string commandArgs[20];                                                    //tod
         int fileCounter;
 
         char* fileName;
+
+        for (int index = 0; index < 20; index++)
+            commandArgs[index] = "\0";
+
 
 
 
@@ -111,11 +122,15 @@ string commandArgs[20];                                                    //tod
             else cout << "temp directory created." << endl;
         }
 
-        for (fileCounter = 1; fileCounter < argCount; fileCounter++)
+        //todo: uncomment this after getting execlp to work
+       // for (fileCounter = 1; fileCounter < argCount; fileCounter++)
         {//todo: verify this gets all the files
 
-
-            fileName = argValues[fileCounter];   //todo: this is a bad way to convert this to a string and concat. Find a better way
+            //todo: this is just for debugging
+            char* ugh = (char*)("hello.cpp");
+            fileName = ugh;
+            //todo: uncomment this after I can get execlp working
+            //fileName = argValues[fileCounter];   //todo: this is a bad way to convert this to a string and concat. Find a better way
             int result = copyFile(fileName);        //todo: this is also probably bad
 
             commandArgs[fileCounter - 1] = fileName;
