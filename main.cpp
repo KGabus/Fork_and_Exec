@@ -57,17 +57,19 @@ string fileNameArray[20];
         gppCommandArray[0] = (char*)"g++";
         gppCommandArray[1] = (char*)"-pass-exit-codes";
         gppCommandArray[2] = (char*)"-std=c++14";
+        gppCommandArray[3] = (char*)"-o";
+        gppCommandArray[4] = (char*)"Gabus.out";
 
         for (int loopIndex = 1; loopIndex < argCount; loopIndex++)
         {   //copy files to be compiled into g++ command arg array
-            gppCommandArray[loopIndex + 2] = fileNames[loopIndex];
+            gppCommandArray[loopIndex + 4] = fileNames[loopIndex];
             cout << fileNameArray[loopIndex] << " ";
         }
 
-        gppCommandArray[argCount + 2] = (char*)NULL;
+        gppCommandArray[argCount + 4] = (char*)NULL;
 
         cout << "Compile command: ";
-        for (int loopIndex = 0; loopIndex <= argCount + 1; loopIndex++)
+        for (int loopIndex = 0; loopIndex <= argCount + 3; loopIndex++)
             cout << gppCommandArray[loopIndex] << " ";
         cout << endl;
 
@@ -81,7 +83,7 @@ string fileNameArray[20];
             else
             {   //parent process
                 wait(&status);
-                if (WEXITSTATUS(status) > 0)
+                if (WEXITSTATUS(status) > 0)                            //g++ uses positive return codes for failures and 0 for success
                     cout << "Could not compile files." << endl;
                 else cout << "File compilation successful." << endl;
             }
@@ -97,7 +99,7 @@ string fileNameArray[20];
 
         tempDirPointer = opendir("./temp");
         if (tempDirPointer == nullptr) {
-            cout << "Directory /temp does not exist?" << endl; //todo: verify this only gets hit when that directory doesn't exist
+            cout << "Directory /temp does not exist." << endl;
 
             int dirError = mkdir("temp", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
             if (dirError == -1)
