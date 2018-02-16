@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string.h>
-#include <experimental/filesystem>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -24,11 +23,16 @@ string fileNameArray[20];
     int copyFile(char* startFileName)
     {   //copies a file to a temp folder created in the same directory is the program
         //returns 0 if copy successful, -1 if read error, -2 if write error
+        size_t lastSlash;
 
         char endFileName[100] = "./temp/";
         strcat(endFileName, startFileName);                             //create the copied file's name/path
 
       //  string endFileName = "./temp" + startFileName;              //todo: strip off location path here if you're going to do it
+
+
+
+
 
         int startFile = open(startFileName, O_RDONLY, 0);
         int endFile = open(endFileName, O_WRONLY | O_CREAT, 0644);
@@ -44,6 +48,9 @@ string fileNameArray[20];
             perror("Read Error");
             return -1;
         }
+
+        close(startFile);
+        close(endFile);
 
         return 0;
     }
@@ -94,6 +101,8 @@ string fileNameArray[20];
     {
         bool noCopyErrors = true;
         int fileCounter;
+        size_t lastSlash;
+        char* endFileName;
 
         char* fileName;
 
@@ -111,11 +120,21 @@ string fileNameArray[20];
         }
 
         for (fileCounter = 1; fileCounter < argCount; fileCounter++)
-        {//todo: verify this gets all the files
+        {
             fileName = argValues[fileCounter];
+
+            //remove path from entered files
+            string tempStr = fileName;                                  //todo: start of new nonsense
+            lastSlash = tempStr.find_last_of("/\\");
+            tempStr.substr(lastSlash + 1);
+            char* tempName = new char[tempStr.length() + 1];
+            strcpy(tempName, tempStr.c_str());
+            strcat(endFileName, tempName);                              //todo: end of new nonsense
+
+
             int result = copyFile(fileName);
 
-            fileNameArray[fileCounter - 1] = fileName;
+            fileNameArray[fileCounter - 1] = fileName;                      //add the file to the array that gets used in the compile command
 
             switch (result)
             {
