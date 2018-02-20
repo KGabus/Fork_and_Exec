@@ -57,7 +57,6 @@ string fileNameArray[20];
         for (int loopIndex = 1; loopIndex < argCount; loopIndex++)
         {   //copy files to be compiled into g++ command arg array
             gppCommandArray[loopIndex + 4] = fileNames[loopIndex];
-            cout << fileNameArray[loopIndex] << " ";
         }
 
         gppCommandArray[argCount + 4] = (char*)NULL;
